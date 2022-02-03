@@ -1,16 +1,28 @@
+import email
 import re
 from xmlrpc.client import boolean
 from flask import Blueprint, render_template, request, flash, redirect, url_for
 from .models import User
 from werkzeug.security import generate_password_hash, check_password_hash 
 from . import db
-
+#1:49:19
 auth = Blueprint('auth', __name__)
 
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
-    data = request.form
-    print(data)
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+        
+        user = User.query.filter_by(email=email).first()
+        if user:
+            if check_password_hash(user.password, password):
+                flash('Logged in successsfully!', category='success')
+                return redirect(url_for('views.home'))
+            else:
+                flash('Incorrect password, try again.', category='error')
+        else:
+            flash('Email does not exist.', category='error')
     return render_template("login.html")
 
 @auth.route('/logout')
@@ -26,8 +38,10 @@ def sign_up():
         password2 = request.form.get('password2')
         
         ## TO DO: add more flash messages regarding password requiriments like use special characters and numbers
-        
-        if len(email) < 4:
+        user = User.query.filter_by(email=email).first()
+        if user:
+            flash('Email already exists.', category='error')
+        elif len(email) < 4:
             flash('Email must be greater than 3 characters', category='error')
         elif len(firstName) < 3:
             flash('First name must be greater than 2 characters', category='error')
