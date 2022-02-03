@@ -21,3 +21,4 @@ class User(db.Model, UserMixin):
     first_name = db.Column(db.String(150))
     notes = db.relationship('Note')
 
+#1:29:12
