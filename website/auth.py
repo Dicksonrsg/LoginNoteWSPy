@@ -6,7 +6,7 @@ from .models import User
 from werkzeug.security import generate_password_hash, check_password_hash 
 from . import db
 from flask_login import login_user, login_required, logout_user, current_user
-#1:49:19
+
 auth = Blueprint('auth', __name__)
 
 @auth.route('/login', methods=['GET', 'POST'])
@@ -41,7 +41,7 @@ def sign_up():
         password1 = request.form.get('password1')
         password2 = request.form.get('password2')
         
-        ## TO DO: add more flash messages regarding password requiriments like use special characters and numbers
+        # TODO: add more flash messages regarding password requiriments like use special characters and numbers
         user = User.query.filter_by(email=email).first()
         if user:
             flash('Email already exists.', category='error')
